@@ -1,0 +1,22 @@
+{
+  "name": "deckofcards",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm run test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/misspran/pokerHands.git"
+  },
+  "author": "Vi Tran",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/misspran/pokerHands/issues"
+  },
+  "homepage": "https://github.com/misspran/pokerHands#readme",
+  "dependencies": {
+    "axios": "^0.18.0"
+  }
+}

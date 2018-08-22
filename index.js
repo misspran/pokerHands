@@ -1,6 +1,5 @@
 const axios = require('axios');
 
-
 const cardsVal = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'JACK', 'QUEEN', 'KING', 'ACE'];
 const suite = ['HEARTS', 'SPADES', 'DIAMONDS', 'CLUBS'];
 
@@ -10,18 +9,12 @@ let draw = async () =>{
         const response = await axios.get('https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1');
         const deck = await response.data.deck_id;
         const draw_response = await axios.get(`https://deckofcardsapi.com/api/deck/${deck}/draw/?count=5`);
-       cards = await draw_response.data;
+        cards = await draw_response.data;
+       // await console.log(cards)
         await pokerLib.hand(cards)
         await pokerLib.sortHand()
-     await console.log(pokerLib.handValInNum, pokerLib.pairsArr)
-       // pokerLib.straight()
-      pokerLib.calculateHand();
-      //pokerLib.fullHouse()
-       
-
-       
-      
-
+       // await console.log(pokerLib.handValInNum, pokerLib.pairsArr)
+        pokerLib.calculateHand();
     }
     catch (err){
         console.log(err)
@@ -29,9 +22,6 @@ let draw = async () =>{
 
 }
  draw()
-
-//console.log(handDrawed)
-
 
 let pokerLib = {
     handCardValue: {},
@@ -43,34 +33,31 @@ let pokerLib = {
 
     hand: (obj) =>{
     
-        let count= 1
-        let suitCount = 1
         
         for (var i = 0; i< obj.cards.length; i++){
             pokerLib.cardsCode.push(obj.cards[i].code)
             if(!pokerLib.handCardValue[obj.cards[i].value]){
-                pokerLib.handCardValue[obj.cards[i].value] = count;
+                pokerLib.handCardValue[obj.cards[i].value] = 1;
             }else{
                 
-                pokerLib.handCardValue[obj.cards[i].value] += count;
+                ++pokerLib.handCardValue[obj.cards[i].value];
             }
             if(!pokerLib.handCardSuit[obj.cards[i].suit]){
-                pokerLib.handCardSuit[obj.cards[i].suit] = suitCount;
+                pokerLib.handCardSuit[obj.cards[i].suit] = 1;
             }else{
-                pokerLib.handCardSuit[obj.cards[i].suit] += suitCount;
+                ++pokerLib.handCardSuit[obj.cards[i].suit];
             }
         }
         
       
         
-        console.log(pokerLib.handCardSuit, pokerLib.handCardValue, pokerLib.cardsCode, pokerLib.handValInNum)
+       // console.log(pokerLib.handCardSuit, pokerLib.handCardValue, pokerLib.cardsCode, pokerLib.handValInNum)
     
     },
     sortHand: ()=>{
         
         
         for( key in pokerLib.handCardValue){
-            console.log(key)
             if(pokerLib.handCardValue[key]===2){
                 pokerLib.pairsArr.push(key)
             }
@@ -99,22 +86,23 @@ let pokerLib = {
    
     straightFlush: () =>{
       if(pokerLib.flush() && pokerLib.straight()){
-          return 'Straight Flush'
+          return true;
       }else{
           return false;
       }
     },
     fourOfKind: () =>{
-        for(suit in pokerLib.handCardSuit){
-            if(pokerLib.handCardSuit[suit] === 4){
-                return '4 of a Kind'
+        for(suit in pokerLib.handCardValue){
+            if(pokerLib.handCardValue[suit] === 4){
+                return true;
             }
         }
+        return false;
     },
     fullHouse: () => {
         if(pokerLib.pairsArr.length && pokerLib.threesArr.length){
             console.log('full house');
-            return 'Full House';
+            return true;
         }else{
             return false;
         }
@@ -124,7 +112,7 @@ let pokerLib = {
     flush:()=>{
         for( suit in this.handCardSuit){
             if(this.handCardSuit[suit] = 5){
-                return 'flush';
+                return true;
             }   
         }
         return false;
@@ -157,34 +145,48 @@ let pokerLib = {
     pairsAndThreesOrHighCard: ()=>{
     
         if(pokerLib.threesArr.length){
-            console.log('3 of a kind')
+            console.log(`3 of a Kind, ${pokerLib.threesArr[0]}`)
             return '3 of a kind';
         }else if(pokerLib.pairsArr.length){
             if(pokerLib.pairsArr.length > 1){
-                console.log('2 Pairs');
+                console.log(`2 Pairs, ${pokerLib.pairsArr[0]} & ${pokerLib.pairsArr[1]}`);
                 return '2 Pairs';
 
             }else{
-                console.log(`1 Pair`)
+                console.log(`1 Pair, ${pokerLib.pairsArr[0]}`)
             return '1 Pairs';
 
             }
            
         }else{
-            console.log(' high card');
+            console.log('High Card');
             return pokerLib.handValInNum[4];
         }
     },
     calculateHand: () =>{
         const cardsHandString = pokerLib.cardsCode.join(', ')
         console.log(`Poker Hand: ${cardsHandString}`)
-        pokerLib.straightFlush()
-        pokerLib.fourOfKind();
-        pokerLib.fullHouse();
-        pokerLib.flush();
-        pokerLib.straight();
-        pokerLib.pairsAndThreesOrHighCard();
+
+        switch (true) {
+            case pokerLib.straightFlush():
+                console.log("Straight Flush");
+                break;
+            case pokerLib.fourOfKind():
+                console.log("Four of a Kind");
+                break;
+            case pokerLib.fullHouse():
+                console.log("Full House");
+                break;
+            case pokerLib.flush():
+                console.log("Flush");
+                break;
+            case pokerLib.straight():
+                console.log("Straight");
+                break;
+            default:
+                pokerLib.pairsAndThreesOrHighCard();;
+        }
     }
 }
 
-//hand()
+module.exports = {pokerLib, draw};

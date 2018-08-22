@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "npm run test"
+    "test": "mocha test",
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
@@ -18,5 +19,10 @@
   "homepage": "https://github.com/misspran/pokerHands#readme",
   "dependencies": {
     "axios": "^0.18.0"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "mocha": "^5.2.0",
+    "nock": "^9.6.1"
   }
 }

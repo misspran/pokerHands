@@ -10,10 +10,8 @@ let draw = async () =>{
         const deck = await response.data.deck_id;
         const draw_response = await axios.get(`https://deckofcardsapi.com/api/deck/${deck}/draw/?count=5`);
         cards = await draw_response.data;
-       // await console.log(cards)
         await pokerLib.hand(cards)
         await pokerLib.sortHand()
-       // await console.log(pokerLib.handValInNum, pokerLib.pairsArr)
         pokerLib.calculateHand();
     }
     catch (err){
@@ -47,10 +45,6 @@ let pokerLib = {
                 ++this.handCardSuit[obj.cards[i].suit];
             }
         }
-        
-        
-       // console.log(pokerLib.handCardSuit, pokerLib.handCardValue, pokerLib.cardsCode, pokerLib.handValInNum)
-    
     },
     sortHand: function(){
         
@@ -107,14 +101,13 @@ let pokerLib = {
 
     flush:function(){
         for( suit in this.handCardSuit){
-            if(this.handCardSuit[suit] = 5){
+            if(this.handCardSuit[suit] === 5){
                 return true;
             }   
         }
         return false;
     },
     straight: function(){
-        //console.log(pokerLib.handValInNum)
         if(this.handValInNum.length === 5){
             if(this.handCardValue[0]===2 && this.handCardValue[4]===14){
                 for(var j= 0; j<3;j++){
@@ -132,13 +125,12 @@ let pokerLib = {
                 }
                 return true;
             }
-
         }else{
             return false;
         }
     },
    
-    pairsAndThreesOrHighCard: ()=>{
+    pairsAndThreesOrHighCard: function (){
     
         if(this.threesArr.length){
             console.log(`3 of a Kind, ${this.threesArr[0]}`)
@@ -150,13 +142,13 @@ let pokerLib = {
 
             }else{
                 console.log(`1 Pair, ${this.pairsArr[0]}`)
-            return '1 Pairs';
+            return '1 Pair';
 
             }
            
         }else{
             console.log('High Card');
-            return this.handValInNum[4];
+            return 'High Card';
         }
     },
     calculateHand: function(){

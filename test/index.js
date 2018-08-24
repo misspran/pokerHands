@@ -1,5 +1,4 @@
-var assert = require('assert');
-var nock = require('nock');
+const assert = require('assert');
 const {pokerLib, draw } = require('../index')
 
 
@@ -365,7 +364,7 @@ describe('pokerLib', function (){
     });
 
     describe('straight', function(){
-        beforeEach(function(){
+        before(function(){
             newPokerLib.handCardSuit = {},
             newPokerLib.handCardValue = {},
             newPokerLib.handValInNum = [],
@@ -389,6 +388,144 @@ describe('pokerLib', function (){
         
     })
 
+    const pokeHand8 = { remaining: 47,
+        deck_id: 'uz17m10nye6r',
+        cards: 
+        [ { code: 'AS',
+            value: 'ACE',
+            suit: 'SPADES' },
+        { code: '3S',
+            value: '3',
+            suit: 'SPADES' },
+        { code: 'AH',
+            value: 'ACE',
+            suit: 'HEARTS' },
+        { code: '2C',
+            value: '2',
+            suit: 'CLUBS' },
+        { code: 'AD',
+            value: 'ACE',
+            suit: 'DIAMONDS' } ],
+        success: true 
+    };
+
+    const pokeHand9 = { remaining: 47,
+        deck_id: 'uz17m10nye6r',
+        cards: 
+        [ { code: '2S',
+            value: '2',
+            suit: 'SPADES' },
+        { code: '3S',
+            value: '3',
+            suit: 'SPADES' },
+        { code: 'AH',
+            value: 'ACE',
+            suit: 'HEARTS' },
+        { code: '2C',
+            value: '2',
+            suit: 'CLUBS' },
+        { code: 'AD',
+            value: 'ACE',
+            suit: 'DIAMONDS' } ],
+        success: true 
+    };
+
+    const pokeHand10 = { remaining: 47,
+        deck_id: 'uz17m10nye6r',
+        cards: 
+        [ { code: '2S',
+            value: '2',
+            suit: 'SPADES' },
+        { code: '3S',
+            value: '3',
+            suit: 'SPADES' },
+        { code: 'AH',
+            value: 'ACE',
+            suit: 'HEARTS' },
+        { code: '2C',
+            value: '2',
+            suit: 'CLUBS' },
+        { code: 'KD',
+            value: 'KING',
+            suit: 'DIAMONDS' } ],
+        success: true 
+    };
+
+    const pokeHand11 = { remaining: 47,
+        deck_id: 'uz17m10nye6r',
+        cards: 
+        [ { code: '8S',
+            value: '8',
+            suit: 'SPADES' },
+        { code: '4S',
+            value: '4',
+            suit: 'SPADES' },
+        { code: '6H',
+            value: '6',
+            suit: 'HEARTS' },
+        { code: '2C',
+            value: '2',
+            suit: 'CLUBS' },
+        { code: 'QD',
+            value: 'QUEEN',
+            suit: 'DIAMONDS' } ],
+        success: true 
+    };
+
+
+
+    describe('pairsAndThreesOrHighCard', function(){
+        beforeEach(function(){
+            newPokerLib.handCardSuit = {},
+            newPokerLib.handCardValue = {},
+            newPokerLib.handValInNum = [],
+            newPokerLib.cardsCode = [],
+            newPokerLib.threesArr = [],
+            newPokerLib.pairsArr = []
+
+            objResult8 = {
+                handCardValue:{ '3': 1, '2': 1, 'ACE': 3 },
+                cardsCode: ['2S', '3S', 'AH', '2C', 'AD'],
+                handValInNum:[2, 3, 14],
+                threesArr: ['ACE'],
+            };
+            objResult9 = {
+                handCardValue:{ '3': 1, '2': 2, 'ACE': 2 },
+                cardsCode: ['AS', '3S', 'AH', '2C', 'AD'],
+                handValInNum:[2, 3, 14],
+                pairsArr: ['2', 'ACE'],
+            };
+        });
+        it('Should return 3 of a kind', function(){
+            newPokerLib.hand(pokeHand8);
+            newPokerLib.sortHand()
+            assert.equal(newPokerLib.threesArr, newPokerLib.threesArr)
+            assert.equal('3 of a kind', newPokerLib.pairsAndThreesOrHighCard())
+        })
+        it('Should return 2 pairs', function(){
+            newPokerLib.hand(pokeHand9);
+            newPokerLib.sortHand()
+            assert.deepEqual(objResult9.pairsArr, newPokerLib.pairsArr)
+            assert.equal('2 Pairs', newPokerLib.pairsAndThreesOrHighCard())
+        })
+        it('Should return 1 pair', function(){
+            newPokerLib.hand(pokeHand10);
+            newPokerLib.sortHand()
+            assert.deepEqual(['2'], newPokerLib.pairsArr)
+            assert.equal('1 Pair', newPokerLib.pairsAndThreesOrHighCard())
+        })
+        it('Should return high card', function(){
+            newPokerLib.hand(pokeHand11);
+            newPokerLib.sortHand()
+            assert.deepEqual([2, 4, 6, 8, 12], newPokerLib.handValInNum)
+            assert.equal('High Card', newPokerLib.pairsAndThreesOrHighCard())
+
+        })
+
+        
+    })
+
 
 });
+
 

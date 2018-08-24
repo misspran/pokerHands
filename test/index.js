@@ -2,8 +2,6 @@ const assert = require('assert');
 const {pokerLib, draw } = require('../index')
 
 
-
-
 describe('pokerLib', function (){
   
         const pokeHand1 = { remaining: 47,
